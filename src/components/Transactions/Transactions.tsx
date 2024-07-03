@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
+import { collection, getDocs, orderBy,where, query, limit } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
 
 const RecentTransactionsCard: React.FC = () => {
@@ -14,6 +14,7 @@ const RecentTransactionsCard: React.FC = () => {
         if (userId) {
           const transactionsQuery = query(
             collection(db, 'transactions'),
+            where('userId', '==', userId),
             orderBy('uploadedAt', 'desc'),
             limit(3) // Fetch up to 3 transactions
           );

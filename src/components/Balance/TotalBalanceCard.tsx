@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, limit, where } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
+
 const TotalBalanceCard: React.FC = () => {
   const [balance, setBalance] = useState<number | null>(null);
 
@@ -14,6 +15,7 @@ const TotalBalanceCard: React.FC = () => {
         if (userId) {
           const transactionsQuery = query(
             collection(db, 'transactions'),
+            where('userId', '==', userId), // Filter transactions for the logged-in user
             orderBy('uploadedAt', 'desc'),
             limit(1)
           );
@@ -58,7 +60,6 @@ const TotalBalanceCard: React.FC = () => {
               <ArrowIconWrapper>
                 <ArrowIcon
                   loading="lazy"
-                 
                 />
               </ArrowIconWrapper>
             </BalanceInfo>
