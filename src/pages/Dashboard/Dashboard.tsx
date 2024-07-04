@@ -11,6 +11,7 @@ import Footer from '../../components/Footer/Footer';
 const ParentContainer = styled.div`
   width: 60%;
   padding: 20px;
+  margin-bottom:100px
 `;
 const Dashboard: React.FC = () => {
   return (
@@ -42,9 +43,12 @@ const Dashboard: React.FC = () => {
               <div className="col-md-4 mb-4">
                 <TransactionCard />
                 </div>
-                <ParentContainer>
-      <WeeklyComparisonGraph />
-    </ParentContainer>
+                <div className="col-md-8">
+  <div className="card" style={{ height: '200px' }}>
+    <WeeklyComparisonGraph />
+  </div>
+</div>
+
     <div>
       <Footer />
     </div>

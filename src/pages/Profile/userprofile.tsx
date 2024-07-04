@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Form, Button, Alert, Container, Row,Card, Col, InputGroup } from "react-bootstrap";
+import { Form, Button, Alert, Row,Card, Col, InputGroup } from "react-bootstrap";
 import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
-import { auth } from "../../config/firebase"; // Adjust Firebase imports as per your setup
+import { auth } from "../../config/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { getErrorMessage } from "../../utils/errorMessages";

@@ -3,6 +3,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { getUserData } from "../../services/authService"; // Adjust path as per your project structure
+import LockScreen from "../../pages/lock-screen";
 
 function Header() {
   const [userData, setUserData] = React.useState<{ firstName: string; lastName: string } | null>(null);
@@ -43,7 +44,11 @@ function Header() {
         )}
         <DateText>{currentDate}</DateText>
       </UserInfo>
+      <div>
+        
+      </div>
       <SearchBar>
+        
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/ecfe137d69da551fc3da16516eb9e12bad1e6c8b018f0a7106567f83b278d090?"

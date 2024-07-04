@@ -6,7 +6,7 @@ const Goals: React.FC = () => {
     <StyledCard className='card'>
       <TopSection>
         <TopLeft>
-          <GoalAmount>$20,000</GoalAmount>
+          <GoalAmount>Ksh 0</GoalAmount>
           <IconContainer>
             <Icon
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b5e72175061bdd0ba49d7d156825eb3c5ca91f747545ab5a96fd2a8f99047cf8?"
@@ -24,7 +24,7 @@ const Goals: React.FC = () => {
           />
           <AchievedDetails>
             <AchievementTitle>Target Achieved</AchievementTitle>
-            <AchievementAmount>$12,500</AchievementAmount>
+            <AchievementAmount>Ksh 0</AchievementAmount>
           </AchievedDetails>
         </GoalAchieved>
         <CurrentMonthGoal>
@@ -35,7 +35,7 @@ const Goals: React.FC = () => {
             loading="lazy"
           />
             <GoalTitle>This month Target</GoalTitle>
-            <GoalAmount1>$20,000</GoalAmount1>
+            <GoalAmount1>Ksh 0</GoalAmount1>
           </GoalDetails>
         </CurrentMonthGoal>
         <TargetVsAchievement>
@@ -46,9 +46,9 @@ const Goals: React.FC = () => {
           <TargetAchievementDetails>
             <Achieved>Target vs Achievement</Achieved>
             <AchievedAmounts>
-              <AchievedAmount>$0</AchievedAmount>
-              <AchievedAmount>12K</AchievedAmount>
-              <AchievedAmount>$20k</AchievedAmount>
+              <AchievedAmount>Ksh 0</AchievedAmount>
+              <AchievedAmount>Ksh 0</AchievedAmount>
+              <AchievedAmount>Ksh 0</AchievedAmount>
             </AchievedAmounts>
           </TargetAchievementDetails>
         </TargetVsAchievement>

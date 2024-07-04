@@ -7,8 +7,8 @@ const BillCard: React.FC = () => {
         <Bills>Upcoming Bills</Bills>
       <BillRow>
         <MonthWrapper>
-          <Month>May</Month>
-          <Date>15</Date>
+         
+          <Date>Date</Date>
         </MonthWrapper>
         <BillDetails>
          
@@ -21,7 +21,7 @@ const BillCard: React.FC = () => {
       </BillRow>
       <BillRow>
         <MonthWrapper>
-          <Month>Month</Month>
+          <Month></Month>
           <Date>Date</Date>
         </MonthWrapper>
         <BillDetails>

@@ -4,40 +4,30 @@ import { Bar } from 'react-chartjs-2';
 import { ChartOptions } from 'chart.js';
 
 const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   datasets: [
     {
-      label: 'This Year',
-      backgroundColor: 'rgba(75,192,192,0.2)',
-      borderColor: 'rgba(75,192,192,1)',
+      label: 'Monthly Expenses',
+      backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      borderColor: 'rgba(54, 162, 235, 1)',
       borderWidth: 1,
-      hoverBackgroundColor: 'rgba(75,192,192,0.4)',
-      hoverBorderColor: 'rgba(75,192,192,1)',
-      data: [65, 59, 80, 81, 56, 55],
-    },
-    {
-      label: 'Last Year',
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-      borderWidth: 1,
-      hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-      hoverBorderColor: 'rgba(255,99,132,1)',
-      data: [28, 48, 40, 19, 86, 27],
+      hoverBackgroundColor: 'rgba(54, 162, 235, 0.8)',
+      hoverBorderColor: 'rgba(54, 162, 235, 1)',
+      data: [1200, 1000, 800, 950, 1100, 1300, 1050, 1150, 1000, 1250, 900, 1100],
     },
   ],
 };
 
 const options: ChartOptions<'bar'> = {
-  indexAxis: 'y', // Display months on y-axis
   responsive: true,
-  maintainAspectRatio: false, // Allow chart to adjust size based on container
+  maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'top',
+      display: false,
     },
     title: {
       display: true,
-      text: 'Expenses Comparison',
+      text: 'Monthly Expenses',
       font: {
         size: 22,
       },
@@ -45,18 +35,23 @@ const options: ChartOptions<'bar'> = {
   },
   scales: {
     x: {
-      beginAtZero: true,
+      grid: {
+        display: false,
+      },
     },
     y: {
       beginAtZero: true,
+      ticks: {
+        stepSize: 200,
+      },
     },
   },
 };
 
-const Monthlychart = () => {
+const MonthlyExpensesChart = () => {
   return (
     <StyledCard className='card'>
-      <Title>Expenses Comparison</Title>
+      <Title>Monthly Expenses</Title>
       <Content>
         <Bar data={data} options={options} />
       </Content>
@@ -67,13 +62,12 @@ const Monthlychart = () => {
 const StyledCard = styled.div`
   display: flex;
   flex-direction: column;
-  height: 60vh; /* Set the card height */
-  max-height: 800px; /* Optional: Set a maximum height to ensure it doesn't exceed a certain limit */
-  width: 100%; /* Ensure the chart takes full width */
+  height: 60vh;
+  max-height: 800px;
+  width: 100%;
 
-  /* Additional styling for responsiveness */
   @media (max-width: 768px) {
-    height: auto; /* Adjust to auto height on smaller screens */
+    height: auto;
   }
 `;
 
@@ -88,10 +82,10 @@ const Content = styled.div`
   box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
   background-color: var(--White, #fff);
   display: flex;
-  flex: 1; /* Expand content to fill available space */
+  flex: 1;
   flex-direction: column;
   padding: 24px;
-  overflow: hidden; /* Ensure content does not overflow */
+  overflow: hidden;
 `;
 
-export default Monthlychart;
+export default MonthlyExpensesChart;

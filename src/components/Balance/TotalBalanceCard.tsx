@@ -46,21 +46,19 @@ const TotalBalanceCard: React.FC = () => {
           <AccountInfo>
             <Label>Account type</Label>
             <AccountType> </AccountType>
-            <AccountNumber> </AccountNumber>
+            <AccountNumber>MPESA ACCOUNT </AccountNumber>
           </AccountInfo>
           <CardImage>
             <ImageWrapper>
               <CardIcon
-                loading="lazy"
-                srcSet="..."
+                
+                
               />
             </ImageWrapper>
             <BalanceInfo>
               <CardBalance>{balance !== null ? `ksh ${balance}` : 'Loading...'}</CardBalance>
               <ArrowIconWrapper>
-                <ArrowIcon
-                  loading="lazy"
-                />
+                
               </ArrowIconWrapper>
             </BalanceInfo>
           </CardImage>

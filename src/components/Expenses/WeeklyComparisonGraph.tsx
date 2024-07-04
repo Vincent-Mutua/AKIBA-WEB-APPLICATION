@@ -1,123 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import React from 'react';
+import { Card } from 'react-bootstrap';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import styled from 'styled-components';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { parseISO, startOfWeek, format } from 'date-fns';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// Example data, replace with your actual data source
+const data = [
+  { name: 'Mon', revenue: 4000, expenses: 2400 },
+  { name: 'Tue', revenue: 3000, expenses: 1398 },
+  { name: 'Wed', revenue: 2000, expenses: 9800 },
+  { name: 'Thu', revenue: 2780, expenses: 3908 },
+  { name: 'Fri', revenue: 1890, expenses: 4800 },
+  { name: 'Sat', revenue: 2390, expenses: 3800 },
+  { name: 'Sun', revenue: 3490, expenses: 4300 },
+];
 
 const WeeklyComparisonGraph: React.FC = () => {
-  const [weeklyData, setWeeklyData] = useState<number[]>([]);
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const transactionsQuery = query(
-          collection(db, 'transactions'),
-          orderBy('completionTime', 'desc')
-        );
-        const querySnapshot = await getDocs(transactionsQuery);
-
-        const transactions = querySnapshot.docs.flatMap((doc) => {
-          const data = doc.data();
-          console.log('Document data:', data); // Log each document's data
-          return data.transactions || [];
-        });
-
-        const withdrawnTransactions = transactions.filter((txn) => txn.withdrawn && txn.withdrawn.startsWith('-'));
-
-        console.log('Fetched withdrawn transactions:', withdrawnTransactions);
-
-        // Group transactions by week
-        const groupedByWeek = withdrawnTransactions.reduce((acc: Record<string, number>, txn) => {
-          const weekStart = format(startOfWeek(parseISO(txn.completionTime)), 'yyyy-MM-dd');
-          acc[weekStart] = (acc[weekStart] || 0) + parseFloat(txn.withdrawn.replace('-', ''));
-          return acc;
-        }, {});
-
-        console.log('Grouped transactions by week:', groupedByWeek);
-
-        // Get last 10 weeks of data
-        const weeklyExpenses = Object.entries(groupedByWeek)
-          .sort(([a], [b]) => new Date(b).getTime() - new Date(a).getTime())
-          .slice(0, 10)
-          .reverse()
-          .map(([, sum]) => sum);
-
-        console.log('Weekly expenses:', weeklyExpenses);
-
-        setWeeklyData(weeklyExpenses);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-      }
-    };
-
-    fetchTransactions();
-  }, []);
-
-  const data = {
-    labels: Array.from({ length: 10 }, (_, i) => `Week ${i + 1}`),
-    datasets: [
-      {
-        label: 'Expenses',
-        data: weeklyData,
-        backgroundColor: 'rgba(42, 170, 138)', // var(--Special-BG2)
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Weekly Expenses Comparison',
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-        barThickness: 30, // Increase or decrease to adjust the bar thickness
-        categoryPercentage: 0.5,
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(255, 255, 255, 0.2)',
-        },
-        min: 0, // Minimum value for the y-axis
-        max: 7500, // Adjust this value to lengthen the y-axis
-        ticks: {
-          stepSize: 100, // Adjust the step size between ticks
-        },
-      },
-    },
-  };
-
   return (
-    <Card className="card">
-      <Bar data={data} options={options} />
+    <Card>
+    <Container>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="revenue" fill="var(--Special-BG2,rgba(19, 116, 75, 0.6))" />
+          <Bar dataKey="expenses" fill="var(--Special-BG2, rgba(0, 0, 0, 0.8))" />
+        </BarChart>
+      </ResponsiveContainer>
+    </Container>
     </Card>
   );
 };
 
-const Card = styled.div`
-  border-radius: 8px;
-  box-shadow: 0px 20px 25px 0px rgba(76, 103, 100, 0.1);
-  background-color: var(--White, #fff);
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0px 24px 34px;
-  width: 150%;
-  max-width: 112%;
-  margin-top: -20px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 `;
 
 export default WeeklyComparisonGraph;
