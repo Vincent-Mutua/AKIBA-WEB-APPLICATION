@@ -129,9 +129,9 @@ const AllTransactions: React.FC = () => {
               {expenses.map((transaction, index) => (
                 <TableRow key={index}>
                   <TableCell>{transaction.receiptNo}</TableCell>
-                  <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                  <TableCell>{transaction.completionTime}</TableCell>
                   <TableCell>{transaction.transactionStatus}</TableCell>
-                  <TableCell>{transaction.details}</TableCell>
+                  <TableCell>{transaction.details}</TableCell>  
                   <TableCell>{transaction.paidIn}</TableCell>
                   <TableCell>{transaction.withdrawn}</TableCell>
                 </TableRow>
@@ -143,7 +143,7 @@ const AllTransactions: React.FC = () => {
                   {revenue.map((transaction, index) => (
                     <TableRow key={index}>
                       <TableCell>{transaction.receiptNo}</TableCell>
-                      <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                      <TableCell>{transaction.completionTime}</TableCell>
                       <TableCell>{transaction.transactionStatus}</TableCell>
                       <TableCell>{transaction.details}</TableCell>
                       <TableCell>{transaction.paidIn}</TableCell>
@@ -156,7 +156,7 @@ const AllTransactions: React.FC = () => {
                   {transactions.map((transaction, index) => (
                     <TableRow key={index}>
                       <TableCell>{transaction.receiptNo}</TableCell>
-                      <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                      <TableCell>{transaction.completionTime}</TableCell>
                       <TableCell>{transaction.transactionStatus}</TableCell>
                       <TableCell>{transaction.details}</TableCell>
                       <TableCell>{transaction.paidIn}</TableCell>

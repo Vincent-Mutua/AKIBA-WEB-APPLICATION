@@ -11,6 +11,7 @@ import Transactions from "./pages/Transactions/Transactions";
 import Bills from "./pages/Bills/Bills";
 import Expenses from "./pages/Expenses/Expenses";
 import Profile from "./pages/Profile/userprofile";
+import Goals from "./pages/Goals/Goals.jsx";
 
 
 const App: React.FC = () => {
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <Route path="/bills" element={<Bills />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/user-profile" element={<Profile />} />
+        <Route path="/goals" element={<Goals />} />
         {/* Default route */}
         <Route path="/" element={<LandingPage />} />
       </Routes>

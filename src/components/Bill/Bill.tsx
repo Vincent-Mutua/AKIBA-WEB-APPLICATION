@@ -1,17 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
+import { auth, storage, db } from '../../config/firebase';
+import { doc, setDoc, collection, getDocs } from 'firebase/firestore';  
 
 const BillCard: React.FC = () => {
+  const [billsData, setBillsData] = React.useState([]);
+  React.useEffect(() => { 
+    let tempArray = [];
+    let bills_collection = collection(db, 'Bills', auth.currentUser.uid, 'Bill');
+    getDocs(bills_collection)
+      .then((snapshot) => {
+        snapshot.forEach((document) => {
+          tempArray.push({ date: document.id, description: document.data().description, amount: document.data().amount });
+        })
+        setBillsData(tempArray)
+      }).catch(err => {
+        console.error(err);
+      })
+    console.log(billsData);
+  }, []);
   return (
     <CardContainer className='card'>
-        <Bills>Upcoming Bills</Bills>
+      <Bills>Upcoming Bills</Bills>
       <BillRow>
         <MonthWrapper>
-         
-          <Date>Date</Date>
+
+          <Date>{}</Date>
         </MonthWrapper>
         <BillDetails>
-         
+
           <BillInfo>
             <BillTitle></BillTitle>
             <LastCharge>Last Charge - Date</LastCharge>
@@ -22,17 +39,17 @@ const BillCard: React.FC = () => {
       <BillRow>
         <MonthWrapper>
           <Month></Month>
-          <Date>Date</Date>
+          <Date>{}</Date>
         </MonthWrapper>
         <BillDetails>
-         
-         
+
+
           <BillInfo>
             <BillTitle></BillTitle>
-            <LastCharge>Last Charge - Date</LastCharge>
+            <LastCharge>Charge</LastCharge>
           </BillInfo>
         </BillDetails>
-        <Amount>Ksh 0</Amount>
+        <Amount>Ksh 0 </Amount>
       </BillRow>
     </CardContainer>
   );
