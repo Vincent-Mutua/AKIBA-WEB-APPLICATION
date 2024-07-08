@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Row,Card, Col, InputGroup } from "react-bootstrap";
 import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
-import { auth } from "../../config/firebase";
+import { auth, storage } from "../../config/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { getErrorMessage } from "../../utils/errorMessages";
 import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
+import { updateProfile } from "firebase/auth";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
 
 
 const Profile: React.FC = () => {
@@ -80,9 +86,41 @@ const Profile: React.FC = () => {
     setEditingEmail(!editingEmail);
   };
 
-  const handlePhotoChange = (_event: React.ChangeEvent<HTMLInputElement>) => {
-    // Implement photo change functionality as per your requirements
+
+
+  const handlePhotoChange = (file) => {
+    if(file == null){
+      return;
+    }
+    const imageRef = storageRef(storage, `products/${auth.currentUser.uid}`);
+    uploadBytes(imageRef, file)
+      .then((snapshot)=>{
+        getDownloadURL(snapshot.ref)
+          .then((url)=>{
+            updateProfile(auth.currentUser,{
+              photoURL:url
+            }).then(()=>{
+              alert('Photo updated')
+            }).catch(err=>{
+              console.error(err); 
+            })
+          }).catch(err=>{
+            console.error(err);
+          })
+      }).catch(err=>{
+        console.error(err);
+      })
   };
+
+  const handleChangerUser = () =>{
+    updateProfile(auth.currentUser,{
+      displayName:`${firstName}, ${lastName}`
+    }).then(()=>{
+      alert('Profile Updated');
+    }).catch(err=>{
+      console.error(err);
+    })
+  }
 
   return (
     <div className="container-fluid">
@@ -192,6 +230,10 @@ const Profile: React.FC = () => {
                   </>
                 )}
               </Form>
+              <Button
+              onClick={()=> handleChangerUser()}>
+                Change Details
+              </Button>
             </Col>
     
             <Col md={6} className="text-center">
@@ -207,7 +249,7 @@ const Profile: React.FC = () => {
               </div>
               <Form.Group>
                 <Form.Label>Change Profile Photo</Form.Label>
-                <Form.Control type="file" onChange={handlePhotoChange} />
+                <Form.Control type="file" onChange={(e)=> handlePhotoChange(e.target.files[0])} />
               </Form.Group>
             </Col>
           </Row>
