@@ -87,21 +87,6 @@ Akiba App is a financial savings and expense tracking application designed speci
 ```
 AKIBA-WEB-APPLICATION
 
-├─ firebase.json
-├─ index.html
-├─ package-lock.json
-├─ package.json
-├─ postcss.config.js
-├─ public
-│  ├─ index.html
-│  └─ vite.svg
-├─ README.md
-├─ server
-│  ├─ package-lock.json
-│  ├─ package.json
-│  ├─ server.js
-│  └─ uploads
-│     └─ MPESA_Statement_2024-06-01_to_2024-06-23_2547xxxxxx955.pdf
 ├─ src
 │  ├─ App.tsx
 │  ├─ assets
@@ -114,17 +99,17 @@ AKIBA-WEB-APPLICATION
 │  │  │  ├─ AllBills.tsx
 │  │  │  └─ Bill.tsx
 │  │  ├─ Expenses
+│  │  │  ├─ ExpenseCard.jsx
 │  │  │  ├─ MonthlyExpenses.tsx
 │  │  │  └─ WeeklyComparisonGraph.tsx
 │  │  ├─ Footer
 │  │  │  └─ Footer.tsx
+│  │  ├─ footer.tsx
 │  │  ├─ Goals
 │  │  │  └─ Goals.tsx
 │  │  ├─ Header
 │  │  │  └─ Header.tsx
-│  │  ├─ page_containers
-│  │  │  ├─ footer.tsx
-│  │  │  └─ navbar.tsx
+│  │  ├─ navbar.tsx
 │  │  ├─ privateroute.tsx
 │  │  ├─ Sidebar
 │  │  │  └─ Sidebar.tsx
@@ -137,12 +122,6 @@ AKIBA-WEB-APPLICATION
 │  │  └─ AuthContext.tsx
 │  ├─ main.tsx
 │  ├─ pages
-│  │  ├─ app
-│  │  │  ├─ home.tsx
-│  │  │  └─ landing-page.tsx
-│  │  ├─ auth
-│  │  │  ├─ login.tsx
-│  │  │  └─ register.tsx
 │  │  ├─ Balances
 │  │  │  └─ Balances.tsx
 │  │  ├─ Bills
@@ -151,9 +130,15 @@ AKIBA-WEB-APPLICATION
 │  │  │  └─ Dashboard.tsx
 │  │  ├─ Expenses
 │  │  │  └─ Expenses.tsx
+│  │  ├─ Goals
+│  │  │  └─ Goals.jsx
+│  │  ├─ home.tsx
+│  │  ├─ landing-page.tsx
+│  │  ├─ lock-screen.tsx
+│  │  ├─ login.tsx
 │  │  ├─ Profile
-│  │  │  ├─ userdetails.tsx
 │  │  │  └─ userprofile.tsx
+│  │  ├─ register.tsx
 │  │  ├─ reset-password.tsx
 │  │  ├─ Transactions
 │  │  │  └─ Transactions.tsx
@@ -162,8 +147,7 @@ AKIBA-WEB-APPLICATION
 │  ├─ services
 │  │  └─ authService.tsx
 │  ├─ utils
-│  │  ├─ errorMessages.tsx
-│  │  └─ lock-screen.tsx
+│  │  └─ errorMessages.tsx
 │  └─ vite-env.d.ts
 ├─ storage.rules
 ├─ tailwind.config.js
@@ -205,4 +189,5 @@ AKIBA-WEB-APPLICATION
 
 ### Contact Information
 For any questions or feedback, please open an issue on the GitHub repository.
+
 

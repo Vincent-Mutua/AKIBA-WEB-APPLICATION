@@ -23,7 +23,7 @@ export default function Goals() {
     let docref = doc(db, 'Goals', auth.currentUser.uid);
     let data = await getDoc(docref);
     setRemoteAmmount(parseInt(data.data().ammount));
-    console.log(remoteAmmount);
+    console.log(remoteAmmount)
     setTarget(parseInt(data.data().target));
     setProgress(parseInt(data.data().ammount) / parseInt(data.data().target) * 100);
 
