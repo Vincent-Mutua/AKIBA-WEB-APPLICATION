@@ -6,6 +6,40 @@ import { collection, query, where, orderBy, limit, getDocs } from 'firebase/fire
 const AllTransactions: React.FC = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [revenue, setRevenue] = useState<any[]>([]);
+  const [showExpenses, setShowExpenses] = useState<boolean>(false);
+  const [showRevenue, setShowRevenue] = useState<boolean>(false);
+
+  const [allActive, setAllActive] = useState<string>('Active');
+  const [revActive, setRevActive] = useState<string>('');
+  const [expActive, setExpActive] = useState<string>(''); 
+
+  const switchActive = (tab: string ):void =>{
+    console.log(tab);
+    switch (tab) {
+      case 'all':
+        setAllActive('Active');
+        setExpActive('');
+        setRevActive('');
+        break;
+
+      case 'revenue':
+        setAllActive('');
+        setExpActive('');
+        setRevActive('Active');
+        break;
+      
+      case 'expenses':
+        setAllActive('');
+        setExpActive('Active');
+        setRevActive('');
+      break;
+
+      default:
+        break;
+    }
+  }
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -23,7 +57,20 @@ const AllTransactions: React.FC = () => {
           if (!querySnapshot.empty) {
             const latestTransactionDoc = querySnapshot.docs[0].data();
             if (latestTransactionDoc.transactions && latestTransactionDoc.transactions.length > 0) {
+              //console.log(latestTransactionDoc.transactions[0].withdrawn);
+              let expensesArray = [];
+              let revArray = [];
+              for (let transaction of latestTransactionDoc.transactions) {
+                if (transaction.withdrawn < 0) {
+                  expensesArray.push(transaction);
+                  console.log(transaction);
+                } else {
+                  revArray.push(transaction)
+                }
+              }
               setTransactions(latestTransactionDoc.transactions);
+              setRevenue(revArray);
+              setExpenses(expensesArray);
             }
           } else {
             console.log('No transactions found!');
@@ -38,15 +85,32 @@ const AllTransactions: React.FC = () => {
     };
 
     fetchTransactions();
+    console.log(typeof (transactions))
   }, []);
 
   return (
     <Container>
       <Title>Recent Transactions</Title>
       <Tabs>
-        <Tab className="active">All</Tab>
-        <Tab>Revenue</Tab>
-        <Tab>Expenses</Tab>
+        <Tab
+        onClick={()=>{
+          setShowRevenue(false);
+          setShowExpenses(false);
+          switchActive('all');
+        }} 
+        className={allActive}>All</Tab>
+        <Tab onClick={() => {
+          setShowRevenue(true);
+          setShowExpenses(false);
+          switchActive('revenue');
+        }}
+        className={revActive}>Revenue</Tab>
+        <Tab onClick={() => {
+          setShowRevenue(false);
+          setShowExpenses(true);
+          switchActive('expenses');
+        }}
+        className={expActive}>Expenses</Tab>
       </Tabs>
       <Table>
         <thead>
@@ -60,16 +124,48 @@ const AllTransactions: React.FC = () => {
           </TableRow>
         </thead>
         <tbody>
-          {transactions.map((transaction, index) => (
-            <TableRow key={index}>
-              <TableCell>{transaction.receiptNo}</TableCell>
-              <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
-              <TableCell>{transaction.transactionStatus}</TableCell>
-              <TableCell>{transaction.details}</TableCell>
-              <TableCell>{transaction.paidIn}</TableCell>
-              <TableCell>{transaction.withdrawn}</TableCell>
-            </TableRow>
-          ))}
+          {showExpenses ?
+            (<>
+              {expenses.map((transaction, index) => (
+                <TableRow key={index}>
+                  <TableCell>{transaction.receiptNo}</TableCell>
+                  <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                  <TableCell>{transaction.transactionStatus}</TableCell>
+                  <TableCell>{transaction.details}</TableCell>
+                  <TableCell>{transaction.paidIn}</TableCell>
+                  <TableCell>{transaction.withdrawn}</TableCell>
+                </TableRow>
+              ))}
+            </>) :
+            (<>
+              {showRevenue ?
+                (<>
+                  {revenue.map((transaction, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{transaction.receiptNo}</TableCell>
+                      <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                      <TableCell>{transaction.transactionStatus}</TableCell>
+                      <TableCell>{transaction.details}</TableCell>
+                      <TableCell>{transaction.paidIn}</TableCell>
+                      <TableCell>{transaction.withdrawn}</TableCell>
+                    </TableRow>
+                  ))}
+                </>)
+                : (<>
+
+                  {transactions.map((transaction, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{transaction.receiptNo}</TableCell>
+                      <TableCell>{new Date(transaction.completionTime.seconds * 1000).toLocaleString()}</TableCell>
+                      <TableCell>{transaction.transactionStatus}</TableCell>
+                      <TableCell>{transaction.details}</TableCell>
+                      <TableCell>{transaction.paidIn}</TableCell>
+                      <TableCell>{transaction.withdrawn}</TableCell>
+                    </TableRow>
+                  ))}
+
+                </>)}
+            </>)}
         </tbody>
       </Table>
       {error && <ErrorMessage>{error}</ErrorMessage>}
