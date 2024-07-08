@@ -206,5 +206,3 @@ AKIBA-WEB-APPLICATION
 ### Contact Information
 For any questions or feedback, please open an issue on the GitHub repository.
 
-
->>>>>>> 76b400c7fe2aaf17dcd4574e2ac8f593f3c901c1
