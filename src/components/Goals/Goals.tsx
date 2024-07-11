@@ -40,8 +40,7 @@ const Goals: React.FC = () => {
         </CurrentMonthGoal>
         <TargetVsAchievement>
           <Icon4
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/e6462d3b932c9aedd118e7e8a245b89108c0b1c3a398b62aa5dce482f15fe5c9?"
-            loading="lazy"
+           
           />
           <TargetAchievementDetails>
             <Achieved>Target vs Achievement</Achieved>

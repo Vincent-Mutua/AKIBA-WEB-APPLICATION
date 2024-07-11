@@ -128,7 +128,7 @@ AKIBA-WEB-APPLICATION
 │  │  │  └─ Bills.tsx
 │  │  ├─ Dashboard
 │  │  │  └─ Dashboard.tsx
-│  │  ├─ Expenses
+│  │  ├─ Expenses;
 │  │  │  └─ Expenses.tsx
 │  │  ├─ Goals
 │  │  │  └─ Goals.jsx
