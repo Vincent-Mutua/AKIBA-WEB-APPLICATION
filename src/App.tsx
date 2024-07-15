@@ -12,7 +12,8 @@ import Bills from "./pages/Bills/Bills";
 import Expenses from "./pages/Expenses/Expenses";
 import Profile from "./pages/Profile/userprofile";
 import Goals from "./pages/Goals/Goals.jsx";
-
+import Admin from "./Admin/Admin.jsx";
+import Statistics from "./pages/Statistics/Statistics";
 
 const App: React.FC = () => {
   return (
@@ -29,7 +30,9 @@ const App: React.FC = () => {
         <Route path="/bills" element={<Bills />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/user-profile" element={<Profile />} />
-        <Route path="/goals" element={<Goals />} />
+        <Route path="/goals" element={<Goals/>}/>
+        <Route path="/admin" element={<Admin/>}/>
+        <Route path="/statistics" element={<Statistics/>}/>
         {/* Default route */}
         <Route path="/" element={<LandingPage />} />
       </Routes>
