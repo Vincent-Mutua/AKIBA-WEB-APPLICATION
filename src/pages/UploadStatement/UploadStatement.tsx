@@ -128,7 +128,7 @@ const UploadStatement: React.FC = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
             console.log('File available at', downloadURL);
-
+            handleModalClose();
             try {
               const transactions = await extractTransactions();
 
@@ -164,7 +164,7 @@ const UploadStatement: React.FC = () => {
         </div>
       </div>
       <div className="row mt-4">
-        <div className="col-md-2 p-0 ">
+        <div className="col-md-2 p-0">
           <Sidebar />
         </div>
         <div className="col-md-9">
