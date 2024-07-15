@@ -4,10 +4,17 @@ import * as React from "react";
 import styled from "styled-components";
 import { getUserData } from "../../services/authService"; // Adjust path as per your project structure
 import LockScreen from "../../pages/lock-screen";
+import { Button } from "react-bootstrap";
+import './header-styles.css'
+import { useNavigate } from "react-router-dom";
+import {auth} from '../../config/firebase.js';
+import {signOut} from 'firebase/auth'
 
 function Header() {
   const [userData, setUserData] = React.useState<{ firstName: string; lastName: string } | null>(null);
   const [currentDate, setCurrentDate] = React.useState<string>("");
+
+  const navigate = useNavigate();
 
   // Fetch user data and current date on component mount
   React.useEffect(() => {
@@ -30,9 +37,16 @@ function Header() {
       
 
     // Fetch user data and current date
-    fetchUserData();
+    fetchUserData();  
     getCurrentDate();
   }, []); // Empty dependency array to run only once on mount
+
+  const HandleLogOut = async ()=>{
+    signOut(auth)
+      .then(()=>{
+        navigate('/')
+      })
+  }
 
   return (
     <HeaderContainer>
@@ -56,6 +70,9 @@ function Header() {
         />
         <SearchInput placeholder="Search here" />
       </SearchBar>
+      <Button className="button" onClick={HandleLogOut}>
+        Log out
+      </Button>
     </HeaderContainer>
   );
 }
