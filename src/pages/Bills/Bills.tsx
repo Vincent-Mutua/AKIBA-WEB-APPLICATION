@@ -7,7 +7,7 @@ import { Button, Form } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { auth, storage, db } from '../../config/firebase';
-import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 
 
@@ -17,7 +17,8 @@ const AllBills1: React.FC = () => {
   const [dueDate, setDueDate] = React.useState<any>(new Date());
 
   const [billsData, setBillsData] = React.useState([]);
-  React.useEffect(()=>{
+  
+  const fetchBills = () =>{
     let tempArray = [];
     let bills_collection = collection(db,'Bills',auth.currentUser.uid,'Bill');
     getDocs(bills_collection)
@@ -29,8 +30,20 @@ const AllBills1: React.FC = () => {
       }).catch(err=>{
         console.error(err);
       })
-    
+  }
+
+  React.useEffect(()=>{
+    fetchBills();
   },[]);
+
+  const deleteBill = async(bill) : Promise<void> => {
+    let deleteRef = doc(db, 'Bills', auth.currentUser.uid, 'Bill', bill.date);
+    deleteDoc(deleteRef).then(()=>{
+      fetchBills();
+      alert('Doc Deleted');
+    } );
+    console.log(bill.date);
+  }
 
   const addBill = async (): Promise<void> => {
     let date = dueDate.toUTCString()
@@ -38,7 +51,7 @@ const AllBills1: React.FC = () => {
     const bill_ref = doc(db, 'Bills', auth.currentUser.uid, 'Bill', date);
     setDoc(bill_ref, { description: addDescription, amount: addAmmount })
       .then(() => {
-
+        fetchBills();
       }).catch(err => console.error(err));
   }
 
@@ -64,6 +77,7 @@ const AllBills1: React.FC = () => {
                       <TableHeader>Due Date</TableHeader>
                       <TableHeader>Description</TableHeader>
                       <TableHeader>Amount</TableHeader>
+                      <TableHeader> Delete </TableHeader>
                     </TableRow>
                   </thead>
                   <tbody>
@@ -72,6 +86,7 @@ const AllBills1: React.FC = () => {
                         <TableCell>{bill.date}</TableCell>
                         <TableCell>{bill.description}</TableCell>
                         <TableCell>{bill.amount}</TableCell>
+                        <TableCell> <Button onClick={()=> deleteBill(bill)}> Delete </Button> </TableCell>
                       </TableRow>
                     ))}
                   </tbody>

@@ -27,19 +27,19 @@ const Balances: React.FC = () => {
                 <TotalBalanceCard />
               </div>
               <div className="col-md-4 mb-4">
+              <TotalBalanceCard />
+              </div>
+              <div className="col-md-4 mb-4">
+              <TotalBalanceCard />
+              </div>
+              <div className="col-md-4 mb-4">
+              <TotalBalanceCard />
+                </div>
+                <div className="col-md-4 mb-4">
+              <TotalBalanceCard />
+                </div>
+                <div className="col-md-4 mb-4">
               <AddAccount />
-              </div>
-              <div className="col-md-4 mb-4">
-              
-              </div>
-              <div className="col-md-4 mb-4">
-              
-                </div>
-                <div className="col-md-4 mb-4">
-              
-                </div>
-                <div className="col-md-4 mb-4">
-              
                 </div>
             </div>
           </div>
