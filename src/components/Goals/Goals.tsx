@@ -1,57 +1,128 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Modal, Button, Form } from 'react-bootstrap';
+import Speedometer from 'react-d3-speedometer';
+import { auth, storage, db } from '../../config/firebase';
+import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
+import GaugeChart from 'react-gauge-chart'
 
 const Goals: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [targetAmount, setTargetAmount] = useState(0);
+  const [savedAmount, setSavedAmount] = useState(0);
+  const [remoteAmount, setRemoteAmount] = useState(0);
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+  const handleSave = () => {
+    addTarget();
+    addAmount();
+    handleCloseModal();
+  };
+
+  const readFromFirebase = async () => {
+    const docRef = doc(db, 'Goals', auth.currentUser?.uid);
+    const data = await getDoc(docRef);
+    if (data.exists()) {
+      setSavedAmount(parseInt(data.data().amount, 10));
+      setTargetAmount(parseInt(data.data().target, 10));
+      setRemoteAmount(parseInt(data.data().amount, 10));
+    }
+  }
+
+  const readSavingsData = async () => {
+    const savingsRef = collection(db, 'Goals', auth.currentUser?.uid, 'Savings');
+    const snapshot = await getDocs(savingsRef);
+    const tempArray = [];
+    snapshot.forEach(document => {
+      const savingsKey = document.id.slice(0, 16);
+      tempArray.push({ date: savingsKey, amount: document.data().amount });
+    });
+    console.log(tempArray);
+  }
+
+  const addTarget = async () => {
+    await readFromFirebase();
+    const docRef = doc(db, 'Goals', auth.currentUser?.uid);
+    await setDoc(docRef, { target: targetAmount }, { merge: true });
+  }
+
+  const addAmount = async () => {
+    const date = new Date().toUTCString();
+    const docRef = doc(db, 'Goals', auth.currentUser?.uid);
+    const amountRef = doc(db, 'Goals', auth.currentUser?.uid, 'Savings', date);
+    const finalAmount = remoteAmount + savedAmount;
+    await setDoc(docRef, { amount: finalAmount, date }, { merge: true });
+    await setDoc(amountRef, { amount: savedAmount });
+  }
+
+  useEffect(() => {
+    readFromFirebase();
+    readSavingsData();
+  }, []);
+
   return (
     <StyledCard className='card'>
       <TopSection>
         <TopLeft>
-          <GoalAmount>Ksh 0</GoalAmount>
+          <GoalAmount>{`Ksh ${targetAmount}`}</GoalAmount>
           <IconContainer>
             <Icon
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/b5e72175061bdd0ba49d7d156825eb3c5ca91f747545ab5a96fd2a8f99047cf8?"
               loading="lazy"
+              onClick={handleOpenModal}
             />
           </IconContainer>
         </TopLeft>
         <Month>Goals</Month>
       </TopSection>
       <BottomSection>
-        <GoalAchieved>
-          <Icon2
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/15163b72fda8fd89a53fdd850406fd84061e45881946ca128c4f2c381d4c0c82?"
-            loading="lazy"
+        <SpeedometerWrapper>
+        <Speedometer
+            width={200}
+            minValue={0}
+            maxValue={targetAmount || 100000}
+            value={savedAmount}
+            segments={5}
+            needleColor="red"
+            startColor="green"
+            endColor="blue"
           />
-          <AchievedDetails>
-            <AchievementTitle>Target Achieved</AchievementTitle>
-            <AchievementAmount>Ksh 0</AchievementAmount>
-          </AchievedDetails>
-        </GoalAchieved>
-        <CurrentMonthGoal>
-         
-          <GoalDetails>
-          <Icon3
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/4298c7a83ffb1f721ae3eeffcb1446b8f07da9e4dc24e2ec2b4008a249167d4e?"
-            loading="lazy"
-          />
-            <GoalTitle>This month Target</GoalTitle>
-            <GoalAmount1>Ksh 0</GoalAmount1>
-          </GoalDetails>
-        </CurrentMonthGoal>
-        <TargetVsAchievement>
-          <Icon4
-           
-          />
-          <TargetAchievementDetails>
-            <Achieved>Target vs Achievement</Achieved>
-            <AchievedAmounts>
-              <AchievedAmount>Ksh 0</AchievedAmount>
-              <AchievedAmount>Ksh 0</AchievedAmount>
-              <AchievedAmount>Ksh 0</AchievedAmount>
-            </AchievedAmounts>
-          </TargetAchievementDetails>
-        </TargetVsAchievement>
+        </SpeedometerWrapper>
       </BottomSection>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Set Target</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Target Amount</Form.Label>
+              <Form.Control
+                type="number"
+                value={targetAmount}
+                onChange={(e) => setTargetAmount(Number(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Amount to Save</Form.Label>
+              <Form.Control
+                type="number"
+                value={savedAmount}
+                onChange={(e) => setSavedAmount(Number(e.target.value))}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </StyledCard>
   );
 };
@@ -64,12 +135,12 @@ const StyledCard = styled.div`
   max-width: 352px;
   flex-direction: column;
   padding: 16px;
-  border 1px solid rgba(243, 243, 243, 1);
+  border: 1px solid rgba(243, 243, 243, 1);
   height: 97%;
 `;
 
 const TopSection = styled.div`
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   justify-content: space-between;
   align-items: start;
   border-bottom: 1px solid rgba(243, 243, 243, 1);
@@ -86,10 +157,6 @@ const GoalAmount = styled.div`
   color: var(--Default-Black, #191919);
   font: 600 16px/145% Inter, sans-serif;
 `;
-const GoalAmount1 = styled.div`
-  color: var(--Default-Black, #191919);
-  font: 700 14px/120% Inter, sans-serif;
-`;
 
 const IconContainer = styled.div`
   align-items: center;
@@ -99,6 +166,7 @@ const IconContainer = styled.div`
   justify-content: center;
   width: 28px;
   height: 28px;
+  cursor: pointer;
 `;
 
 const Icon = styled.img`
@@ -122,96 +190,16 @@ const BottomSection = styled.div`
   padding: 8px 0;
 `;
 
-const GoalAchieved = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-`;
-
-const Icon2 = styled.img`
-  aspect-ratio: 1;
-  object-fit: cover;
-  width: 24px;
-`;
-
-const AchievementTitle = styled.div`
-  color: var(--Gray-02, #878787);
-  font: 400 10px/110% Inter, sans-serif;
-`;
-
-const AchievementAmount = styled.div`
-  color: var(--Default-Black, #191919);
-  font: 700 14px/120% Inter, sans-serif;
-`;
-
-const AchievedDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-`;
-
-const CurrentMonthGoal = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-`;
-
-const Icon3 = styled.img`
-  aspect-ratio: 1;
-  object-fit: cover;
-  width: 24px;
-`;
-
-const GoalDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-`;
-
-const GoalTitle = styled.div`
-  color: var(--Gray-02, #878787);
-  font: 400 10px/110% Inter, sans-serif;
-`;
-
-const TargetVsAchievement = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-`;
-
-const Icon4 = styled.img`
-  aspect-ratio: 2.2;
-  object-fit: cover;
-  width: 100px;
-`;
-
-const TargetAchievementDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-`;
-
-const Achieved = styled.div`
-  color: var(--Default-Black, #191919);
-  font: 700 10px/100% Inter, sans-serif;
-`;
-
-const AchievedAmounts = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 4px;
-`;
-
-const AchievedAmount = styled.div`
-  color: var(--Gray-02, #878787);
-  font: 400 10px/110% Inter, sans-serif;
+const SpeedometerWrapper = styled.div`
+ .gauge-percent {
+    fill: #118fa8; /* Change this to your desired color */
+  }
+  width: 200px;
+  height: 120px;
+   margin: 0 auto;
+   margin-top: auto;
+ text-color: #118fa8;
+ 
 `;
 
 export default Goals;
