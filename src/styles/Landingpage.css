@@ -1,0 +1,77 @@
+.landing-page{
+    background-color: hsl(184, 83%, 11%);
+    margin-bottom: 3em;
+    height: 100vh;
+    width: 100%;
+}
+
+.app-title{
+    color:blanchedalmond;
+    font-family: Roboto, sans-serif;
+    animation: fadeIn 3s;
+}
+
+
+.Navbar{
+    color: rgb(255, 255, 255);
+    background-color: hsl(184, 83%, 11%);
+    padding: 10px ,15px;
+    font-family: Roboto, sans-serif;
+    
+}
+
+h1{
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+    font-family: Roboto, sans-serif;
+    color: white;
+    
+}
+
+.lead{
+    
+    margin-top: 3em;
+    font-size: 2em;
+    font-weight: bold;
+    animation: fadeIn 4s;
+    color:white;
+}
+
+.quote{
+    font-style: italic;
+   
+    font-size: 1.5em;
+    margin-top: 3em;
+    animation: fadeIn 5s;
+    color:white;
+}
+
+.author{
+    font-size: 1.5em;
+    font-weight: bold;
+    animation: fadeIn 6s;
+    color: white;
+
+}
+
+
+
+.ready{
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 3em;
+    animation: fadeIn 7s;
+    color: white;
+
+}
+
+@keyframes fadeIn{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}

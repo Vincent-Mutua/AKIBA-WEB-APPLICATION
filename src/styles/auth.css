@@ -1,0 +1,58 @@
+
+h2,h3{
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    position: relative;
+    text-decoration: underline;
+    color: rgb(137, 137, 137);
+
+}
+
+p{
+    font-family: 'Roboto', sans-serif;
+    color: rgb(138, 138, 138);
+
+}
+
+
+.register-form{
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    padding: 20px;
+    margin-bottom: 100px;
+}
+
+.form-label{
+    font-family: 'Roboto', sans-serif;
+    color:black;
+    margin-top: 3px;
+    font-weight: bold;
+}
+
+.form-outline{
+    border: 1px solid black;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 10px;
+    margin-top: 3px;
+
+}
+
+
+.login-link{
+    color: black;
+    font-family: 'Roboto', sans-serif;
+}
+
+.page{
+    background-color: hsl(184, 83%, 11%);
+    margin-bottom: 3em;
+   
+}
+
+
+
+
+
+
+

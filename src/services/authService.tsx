@@ -1,6 +1,6 @@
 // src/services/authService.ts
 
-import { auth, db } from '../config/firebase'; // Import db from firebase config
+import { auth, db } from '../config/firebase.js'; // Import db from firebase config
 import { User } from 'firebase/auth'; // Adjust the import as per Firebase SDK version
 import { doc, getDoc } from 'firebase/firestore';
 
