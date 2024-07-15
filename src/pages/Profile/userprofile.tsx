@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Row,Card, Col, InputGroup } from "react-bootstrap";
 import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
-import { auth, storage } from "../../config/firebase";
+import { auth, storage, db } from "../../config/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { getErrorMessage } from "../../utils/errorMessages";
@@ -13,6 +13,7 @@ import {
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 
 
 const Profile: React.FC = () => {
@@ -116,7 +117,11 @@ const Profile: React.FC = () => {
     updateProfile(auth.currentUser,{
       displayName:`${firstName}, ${lastName}`
     }).then(()=>{
-      alert('Profile Updated');
+      let userRef = doc(db, 'users', auth.currentUser.uid);
+      setDoc(userRef,{firstName, lastName, email: auth.currentUser.email},{merge:true})
+        .then(()=>{
+          alert('Profile Updated');
+        })
     }).catch(err=>{
       console.error(err);
     })
@@ -126,7 +131,7 @@ const Profile: React.FC = () => {
     <div className="container-fluid">
         <Header />
         <div className="row">
-        <div className="col-md-2 p-3">
+        <div className="col-md-2 p-0">
           <Sidebar />
         </div>
         <div className="col-md-10">

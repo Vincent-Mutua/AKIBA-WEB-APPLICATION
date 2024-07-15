@@ -1,0 +1,39 @@
+.statistics-page {
+    flex: 1;
+}
+
+.form-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: ease-in-out 2s;
+}
+
+.statistics-content {
+    width: 83.3%;
+    margin-left: 35.4vh;
+    height: 91vh;
+    flex: 1;
+}
+
+.pie-charts {
+    width: 100%;
+    display: flex;
+    justify-content: space-around; /* Adjust spacing between charts */
+}
+
+.expenses-pie,
+.revenue-pie {
+    width: 100%; /* Adjust width to leave some space for margins and avoid overflow */
+    
+   /* Adjust margin as needed for spacing between charts */
+}
+
+.expenses-heading h2 {
+    width: 150px;
+  
+}
+.recharts-legend-wrapper {
+    display: flex;
+    flex-direction: column;
+}

@@ -19,7 +19,7 @@ const Balances: React.FC = () => {
         {/* Cards Section (Right) */}
         <div className="col-md-10">
           <div className="container-fluid">
-            <br />
+            <br/>
 
             {/* Cards Row */}
             <div className="row">
