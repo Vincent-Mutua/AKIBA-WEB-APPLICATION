@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { FaHome, FaFileAlt, FaShoppingCart, FaChartBar, FaLayerGroup, FaUpload, FaUser } from 'react-icons/fa';
 
 const Sidebar: React.FC = () => {
   return (
-    <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-dark  p-3 pr-0 position-fixed">
+    <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-dark p-3 pr-0 position-fixed">
       <div className="position-sticky">
         <ul className="nav flex-column">
           <li className="nav-item mb-3">
@@ -11,21 +12,21 @@ const Sidebar: React.FC = () => {
               className={({ isActive }) =>
                 `nav-link px-3 py-2 text-light ${isActive ? 'active bg-success rounded p-2' : ''}`
               }
-              to="/Dashboard"
+              to="/dashboard"
             >
-              <span data-feather="home"></span>
+              <FaHome className="me-2" />
               Dashboard
             </NavLink>
           </li>
           <li className="nav-item mb-3">
             <NavLink
               className={({ isActive }) =>
-                 `nav-link px-3 py-2 text-light ${isActive ? 'active bg-success rounded p-2' : ''}`
+                `nav-link px-3 py-2 text-light ${isActive ? 'active bg-success rounded p-2' : ''}`
               }
-              to="/balances"
+              to="/statistics"
             >
-              <span data-feather="file"></span>
-              Balances
+              <FaFileAlt className="me-2" />
+              Statistics
             </NavLink>
           </li>
           <li className="nav-item mb-3">
@@ -35,7 +36,7 @@ const Sidebar: React.FC = () => {
               }
               to="/bills"
             >
-              <span data-feather="shopping-cart"></span>
+              <FaShoppingCart className="me-2" />
               Bills
             </NavLink>
           </li>
@@ -44,20 +45,9 @@ const Sidebar: React.FC = () => {
               className={({ isActive }) =>
                 `nav-link px-3 py-2 text-light ${isActive ? 'active bg-success rounded p-2' : ''}`
               }
-              to="/expenses"
-            >
-              <span data-feather="users"></span>
-              Expenses
-            </NavLink>
-          </li>
-          <li className="nav-item mb-3">
-            <NavLink
-              className={({ isActive }) =>
-                 `nav-link px-3 py-2 text-light ${isActive ? 'active bg-success rounded p-2' : ''}`
-              }
               to="/goals"
             >
-              <span data-feather="bar-chart-2"></span>
+              <FaChartBar className="me-2" />
               Goals
             </NavLink>
           </li>
@@ -68,7 +58,7 @@ const Sidebar: React.FC = () => {
               }
               to="/transactions"
             >
-              <span data-feather="layers"></span>
+              <FaLayerGroup className="me-2" />
               Transactions
             </NavLink>
           </li>
@@ -79,7 +69,7 @@ const Sidebar: React.FC = () => {
               }
               to="/upload-statement"
             >
-              <span data-feather="file"></span>
+              <FaUpload className="me-2" />
               Upload Statement
             </NavLink>
           </li>
@@ -90,10 +80,13 @@ const Sidebar: React.FC = () => {
               }
               to="/user-profile"
             >
-              <span data-feather="file"></span>
+              <FaUser className="me-2" />
               Profile
             </NavLink>
           </li>
+          <br />
+          <br />
+          <br />
         </ul>
       </div>
     </nav>
