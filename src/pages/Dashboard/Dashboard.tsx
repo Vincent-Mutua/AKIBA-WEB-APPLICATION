@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
         <div className="col-md-2 p-0">
           <Sidebar />
         </div>
-        
+
         {/* Cards Section (Right) */}
         <div className="col-md-10">
           <div className="container-fluid">
@@ -35,30 +35,30 @@ const Dashboard: React.FC = () => {
                 <TotalBalanceCard />
               </div>
               <div className="col-md-4 mb-4">
-                <Goals/>
+                <Goals />
               </div>
               <div className="col-md-4 mb-4">
                 <BillCard />
               </div>
               <div className="col-md-4 mb-4">
                 <TransactionCard />
+              </div>
+              <div className="col-md-8">
+                <div className="card" style={{ height: '100px' }}>
+                  <WeeklyComparisonGraph />
                 </div>
-                <div className="col-md-8">
-  <div className="card" style={{ height: '200px' }}>
-    <WeeklyComparisonGraph />
-  </div>
-</div>
+              </div>
 
-    <div>
-      <Footer />
-    </div>
+              <div>
+                <Footer />
+              </div>
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
-    
+
   );
 };
 
