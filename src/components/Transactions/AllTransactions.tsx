@@ -1,133 +1,255 @@
-// src/components/Header/Header.tsx
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { db, auth } from '../../config/firebase';
+import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 
-import * as React from "react";
-import styled from "styled-components";
-import { getUserData } from "../../services/authService"; // Adjust path as per your project structure
-import LockScreen from "../../pages/lock-screen";
-import { Button } from "react-bootstrap";
-import './header-styles.css'
-import { useNavigate } from "react-router-dom";
-import {auth} from '../../config/firebase.js';
-import {signOut} from 'firebase/auth'
+const AllTransactions: React.FC = () => {
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [revenue, setRevenue] = useState<any[]>([]);
+  const [showExpenses, setShowExpenses] = useState<boolean>(false);
+  const [showRevenue, setShowRevenue] = useState<boolean>(false);
 
-function Header() {
-  const [userData, setUserData] = React.useState<{ firstName: string; lastName: string } | null>(null);
-  const [currentDate, setCurrentDate] = React.useState<string>("");
+  const [allActive, setAllActive] = useState<string>('Active');
+  const [revActive, setRevActive] = useState<string>('');
+  const [expActive, setExpActive] = useState<string>(''); 
 
-  const navigate = useNavigate();
+  const switchActive = (tab: string ):void =>{
+    console.log(tab);
+    switch (tab) {
+      case 'all':
+        setAllActive('Active');
+        setExpActive('');
+        setRevActive('');
+        break;
 
-  // Fetch user data and current date on component mount
-  React.useEffect(() => {
-    // Function to fetch user data
-    const fetchUserData = async () => {
+      case 'revenue':
+        setAllActive('');
+        setExpActive('');
+        setRevActive('Active');
+        break;
+      
+      case 'expenses':
+        setAllActive('');
+        setExpActive('Active');
+        setRevActive('');
+      break;
+
+      default:
+        break;
+    }
+  }
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
       try {
-        const user = await getUserData();
-        setUserData(user);
+        const userId = auth.currentUser?.uid;
+        if (userId) {
+          const transactionsQuery = query(
+            collection(db, 'transactions'),
+            where('userId', '==', userId), // Filter transactions for the logged-in user
+            orderBy('uploadedAt', 'desc'),
+            limit(1)
+          );
+          const querySnapshot = await getDocs(transactionsQuery);
+
+          if (!querySnapshot.empty) {
+            const latestTransactionDoc = querySnapshot.docs[0].data();
+            if (latestTransactionDoc.transactions && latestTransactionDoc.transactions.length > 0) {
+              //console.log(latestTransactionDoc.transactions[0].withdrawn);
+              let expensesArray = [];
+              let revArray = [];
+              for (let transaction of latestTransactionDoc.transactions) {
+                if (transaction.withdrawn < 0) {
+                  expensesArray.push(transaction);
+                  console.log(transaction);
+                } else {
+                  revArray.push(transaction)
+                }
+              }
+              setTransactions(latestTransactionDoc.transactions);
+              setRevenue(revArray);
+              setExpenses(expensesArray);
+            }
+          } else {
+            console.log('No transactions found!');
+          }
+        } else {
+          console.log('No user ID found!');
+        }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching transactions:', error);
+        setError('Error fetching transactions. Please try again later.');
       }
     };
 
-    // Function to get current date
-    const getCurrentDate = () => {
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        setCurrentDate(now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-      };
-      
-
-    // Fetch user data and current date
-    fetchUserData();  
-    getCurrentDate();
-  }, []); // Empty dependency array to run only once on mount
-
-  const HandleLogOut = async ()=>{
-    signOut(auth)
-      .then(()=>{
-        navigate('/')
-      })
-  }
+    fetchTransactions();
+    console.log(typeof (transactions))
+  }, []);
 
   return (
-    <HeaderContainer>
-      <UserInfo>
-        {userData && (
-          <Greetings>
-            Hello, {userData.firstName} {userData.lastName}
-          </Greetings>
-        )}
-        <DateText>{currentDate}</DateText>
-      </UserInfo>
-      <div>
-        
-      </div>
-      <SearchBar>
-        
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/ecfe137d69da551fc3da16516eb9e12bad1e6c8b018f0a7106567f83b278d090?"
-          alt="Search Icon"
-        />
-        <SearchInput placeholder="Search here" />
-      </SearchBar>
-      <Button className="button" onClick={HandleLogOut}>
-        Log out
-      </Button>
-    </HeaderContainer>
+    <Container>
+      <Title>Recent Transactions</Title>
+      <Tabs>
+        <Tab
+        onClick={()=>{
+          setShowRevenue(false);
+          setShowExpenses(false);
+          switchActive('all');
+        }} 
+        className={allActive}>All</Tab>
+        <Tab onClick={() => {
+          setShowRevenue(true);
+          setShowExpenses(false);
+          switchActive('revenue');
+        }}
+        className={revActive}>Revenue</Tab>
+        <Tab onClick={() => {
+          setShowRevenue(false);
+          setShowExpenses(true);
+          switchActive('expenses');
+        }}
+        className={expActive}>Expenses</Tab>
+      </Tabs>
+      <Table>
+        <thead>
+          <TableRow>
+            <TableHeader>Receipt No</TableHeader>
+            <TableHeader>Completion Time</TableHeader>
+            <TableHeader>Status</TableHeader>
+            <TableHeader>Details</TableHeader>
+            <TableHeader>Paid In</TableHeader>
+            <TableHeader>Withdrawn</TableHeader>
+          </TableRow>
+        </thead>
+        <tbody>
+          {showExpenses ?
+            (<>
+              {expenses.map((transaction, index) => (
+                <TableRow key={index}>
+                  <TableCell>{transaction.receiptNo}</TableCell>
+                  <TableCell>{transaction.completionTime}</TableCell>
+                  <TableCell>{transaction.transactionStatus}</TableCell>
+                  <TableCell>{transaction.details}</TableCell>
+                  <TableCell>{transaction.paidIn}</TableCell>
+                  <TableCell>{transaction.withdrawn}</TableCell>
+                </TableRow>
+              ))}
+            </>) :
+            (<>
+              {showRevenue ?
+                (<>
+                  {revenue.map((transaction, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{transaction.receiptNo}</TableCell>
+                      <TableCell>{transaction.completionTime}</TableCell>
+                      <TableCell>{transaction.transactionStatus}</TableCell>
+                      <TableCell>{transaction.details}</TableCell>
+                      <TableCell>{transaction.paidIn}</TableCell>
+                      <TableCell>{transaction.withdrawn}</TableCell>
+                    </TableRow>
+                  ))}
+                </>)
+                : (<>
+
+                  {transactions.map((transaction, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{transaction.receiptNo}</TableCell>
+                      <TableCell>{transaction.completionTime}</TableCell>
+                      <TableCell>{transaction.transactionStatus}</TableCell>
+                      <TableCell>{transaction.details}</TableCell>
+                      <TableCell>{transaction.paidIn}</TableCell>
+                      <TableCell>{transaction.withdrawn}</TableCell>
+                    </TableRow>
+                  ))}
+
+                </>)}
+            </>)}
+        </tbody>
+      </Table>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <LoadMore>Load More</LoadMore>
+    </Container>
   );
-}
+};
 
-// Styled-components styles
-const HeaderContainer = styled.div`
-background-color: rgba(176, 176, 176, 0.1);
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(232, 232, 232, 1);
-  display: flex;
-  gap: 20px;
-  padding: 12px 28px;
-  @media (max-width: 991px) {
-    flex-wrap: wrap;
-    padding: 20px;
-  }
-`;
-
-const UserInfo = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  font size: 8px;
-`;
-
-const Greetings = styled.div`
-  color: #191919;
-  font-weight: 700;
-  font-size: 15px;
-  line-height: 117%;
-`;
-
-const DateText = styled.div`
-  color: #9f9f9f;
-  font-size: 14px;
-`;
-
-const SearchBar = styled.div`
-  align-items: center;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 26px 26px 0px rgba(106, 22, 58, 0.04);
-  display: flex;
-  gap: 10px;
-  padding: 8px 12px;
-`;
-
-const SearchInput = styled.input`
-  border: none;
-  font-size: 16px;
-  color: #9f9f9f;
   width: 100%;
-  &::placeholder {
-    color: #9f9f9f;
+  padding: 20px;
+  box-sizing: border-box;
+`;
+
+const Title = styled.div`
+  font-size: 15px;
+  line-height: 32px;
+  color: #737373;
+  margin-bottom: 16px;
+`;
+
+const Tabs = styled.div`
+  display: flex;
+  margin-bottom: 5px;
+`;
+
+const Tab = styled.div`
+  padding: 10px 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #525252;
+  cursor: pointer;
+
+  &.active {
+    color: #14b8a6;
+    border-bottom: 2px solid #14b8a6;
   }
 `;
 
-export default Header;
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+`;
+
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background-color: #f3f4f6;
+  }
+`;
+
+const TableHeader = styled.th`
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  color: #27272a;
+  border-bottom: 1px solid rgba(156, 163, 175, 0.3);
+`;
+
+const TableCell = styled.td`
+  padding: 5px;
+  text-align: left;
+  font-size: 14px;
+  color: #27272a;
+  border-bottom: 1px solid rgba(156, 163, 175, 0.3);
+`;
+
+const LoadMore = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #14b8a6;
+  cursor: pointer;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+`;
+
+export default AllTransactions;
