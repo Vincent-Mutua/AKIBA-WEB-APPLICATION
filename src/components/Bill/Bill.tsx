@@ -31,7 +31,7 @@ const BillCard: React.FC = () => {
 
           <BillInfo>
             <BillTitle></BillTitle>
-            <LastCharge>Last Charge - Date</LastCharge>
+            <LastCharge></LastCharge>
           </BillInfo>
         </BillDetails>
         <Amount>ksh 0</Amount>
@@ -46,7 +46,7 @@ const BillCard: React.FC = () => {
 
           <BillInfo>
             <BillTitle></BillTitle>
-            <LastCharge>Charge</LastCharge>
+            <LastCharge></LastCharge>
           </BillInfo>
         </BillDetails>
         <Amount>Ksh 0 </Amount>
